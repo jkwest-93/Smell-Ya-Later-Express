@@ -1,6 +1,9 @@
 const express = require('express');
-const items = require('./items')
+const items = require('./items');
+const cors = require('cors');
+
 const app = express();
+app.use(cors());
 
 app.set('port', process.env.PORT || 1337)
 app.locals.title = 'Smell Ya Later'
