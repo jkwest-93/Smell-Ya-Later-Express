@@ -1,6 +1,6 @@
 const express = require('express');
 const items = require('./items');
-const cors = require('cors');
+const MessagingResponse = require('twilio').twiml.MessagingResponse;
 const bodyParser = require('body-parser')
 require('dotenv').config()
 const client = require('twilio')(
@@ -49,6 +49,16 @@ app.post('/api/v1/messages', (req, res) => {
             console.log(err);
             res.send(JSON.stringify({ success: false }))
         })
+})
+
+app.post('/api/v1/sms', (request, response) => {
+    const twiml = new MessagingResponse();
+
+    const message = twiml.message('Thanks for your response!')
+    console.log(message)
+
+    response.writeHead(200, { 'Content-Type': 'text/xml' })
+    response.end(twiml.toString());
 })
 
 app.listen(app.get('port'), () => {
