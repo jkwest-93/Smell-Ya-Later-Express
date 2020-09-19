@@ -26,6 +26,23 @@ app.get('/api/v1/items', (request, response) => {
     response.json({ items })
 })
 
+app.post('api/v1/messages', (req, res) => {
+    res.header('Content-Type', 'application/json')
+    client.messages
+        .create({
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: req.body.to,
+            body: req.body.body
+        })
+        .then(() => {
+            res.send(JSON.stringify({ success: true }))
+        })
+        .catch(err => {
+            console.log(err);
+            res.send(JSON.stringify({ success: false }))
+        })
+})
+
 app.listen(app.get('port'), () => {
     console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}`)
 });
