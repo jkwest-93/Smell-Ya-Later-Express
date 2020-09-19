@@ -23,6 +23,9 @@ app.use((req, res, next) => {
 app.set('port', process.env.PORT || 1337)
 app.locals.title = 'Smell Ya Later'
 app.locals.items = items.items
+app.locals.messages = []
+client.messages.list()
+    .then(messages => messages.forEach(m => app.locals.messages.push(m)))
 
 app.get('/', (request, response) => {
     response.send(`Welcome to ${app.locals.title}`)
