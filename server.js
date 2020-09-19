@@ -11,7 +11,14 @@ const client = require('twilio')(
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+});
 
 app.set('port', process.env.PORT || 1337)
 app.locals.title = 'Smell Ya Later'
@@ -27,7 +34,7 @@ app.get('/api/v1/items', (request, response) => {
     response.json({ items })
 })
 
-app.post('api/v1/messages', (req, res) => {
+app.post('/api/v1/messages', (req, res) => {
     res.header('Content-Type', 'application/json')
     client.messages
         .create({
