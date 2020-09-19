@@ -1,9 +1,24 @@
 const express = require('express');
 const items = require('./items');
 const cors = require('cors');
+const bodyParser = require('body-parser')
+require('dotenv').config()
+const client = require('twilio')(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN,
+);
 
 const app = express();
-app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+});
 
 app.set('port', process.env.PORT || 1337)
 app.locals.title = 'Smell Ya Later'
@@ -17,6 +32,23 @@ app.get('/api/v1/items', (request, response) => {
     const items = app.locals.items
 
     response.json({ items })
+})
+
+app.post('/api/v1/messages', (req, res) => {
+    res.header('Content-Type', 'application/json')
+    client.messages
+        .create({
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: req.body.to,
+            body: req.body.body
+        })
+        .then(() => {
+            res.send(JSON.stringify({ success: true }))
+        })
+        .catch(err => {
+            console.log(err);
+            res.send(JSON.stringify({ success: false }))
+        })
 })
 
 app.listen(app.get('port'), () => {
