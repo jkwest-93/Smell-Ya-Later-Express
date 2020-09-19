@@ -15,6 +15,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-pino-logger": "^5.0.0",
+    "ngrok": "^3.3.0",
     "pino": "^6.6.1"
   },
   "devDependencies": {
