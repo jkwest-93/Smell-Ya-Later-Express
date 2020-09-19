@@ -1,6 +1,8 @@
 const express = require('express');
 const items = require('./items');
 const cors = require('cors');
+const bodyParser = require('body-parser')
+require('dotenv').config()
 const client = require('twilio')(
     process.env.TWILIO_ACCOUNT_SID,
     process.env.TWILIO_AUTH_TOKEN
@@ -9,7 +11,6 @@ const client = require('twilio')(
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(pino);
 app.use(cors());
 
 app.set('port', process.env.PORT || 1337)
