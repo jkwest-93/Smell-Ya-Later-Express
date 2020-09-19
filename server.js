@@ -37,6 +37,12 @@ app.get('/api/v1/items', (request, response) => {
     response.json({ items })
 })
 
+app.get('/api/v1/messages', (request, response) => {
+    const messages = app.locals.messages
+
+    response.json({ messages })
+})
+
 app.post('/api/v1/messages', (req, res) => {
     res.header('Content-Type', 'application/json')
     client.messages
