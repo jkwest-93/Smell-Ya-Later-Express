@@ -37,6 +37,30 @@ app.get('/api/v1/items', (request, response) => {
     response.json({ items })
 })
 
+app.post('/api/v1/items', (request, response) => {
+    response.header('Content-Type', 'application/json')
+    const requiredProperties = [ 'imageUrl', 'name'];
+    const receivedProperties = Object.keys(request.body);
+
+    for(let property of requiredProperties) {
+        if(!receivedProperties.includes(property)) {
+            return response.status(422).json({error: `Cannot POST: missing property ${property} in request.`})
+        }
+    }
+
+    let message;
+    const item = {
+        id: Date.now(),
+        name: request.body.name,
+        imageUrl: request.body.imageUrl
+    }
+
+    app.locals.items[item.id] = item
+    message = `${item.name} has been added to your Smell Kit`
+
+    return response.status(201).json({ message })
+})
+
 app.get('/api/v1/messages', (request, response) => {
     const messages = app.locals.messages
 
