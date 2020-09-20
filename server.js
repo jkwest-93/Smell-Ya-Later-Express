@@ -84,6 +84,25 @@ app.post('/api/v1/messages', (req, res) => {
         })
 })
 
+app.delete('/api/v1/messages/:id', (request, response) => {
+    response.header('Content-Type', 'application/json')
+    const { id } = request.params;
+    if(!id) {
+        return response.status(422).json({ errorMessage: 'No message id included in request'});
+    };
+    
+    client.messages(id).remove()
+    let shortenedMessages = []
+    client.messages.list().then(messages => messages.forEach(m => shortenedMessages.push(m)))
+
+    if(shortenedMessages.length === app.locals.messages.length) {
+        return response.status(404).json({ errorMessage: `Cannot DELETE: no message with an id of ${id} found`})
+    }
+    
+    app.locals.messages = shortenedMessages;
+    response.status(204)
+})
+
 app.post('/api/v1/sms', (request, response) => {
     const twiml = new MessagingResponse();
 
