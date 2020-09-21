@@ -19,11 +19,11 @@ const items = {
         name: 'Eucalyptus',
         image: 'https://images.unsplash.com/photo-1517008607120-139741f5eeef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
     },
-    5: {
-        id: 5,
-        name: 'Rose',
-        image: 'https://images.unsplash.com/photo-1518709779341-56cf4535e94b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
-    }
+    // 5: {
+    //     id: 5,
+    //     name: 'Rose',
+    //     image: 'https://images.unsplash.com/photo-1518709779341-56cf4535e94b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+    // }
 }
 
 module.exports.items = items
