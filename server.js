@@ -85,22 +85,21 @@ app.post('/api/v1/messages', (req, res) => {
 })
 
 app.delete('/api/v1/messages/:id', (request, response) => {
-    response.header('Content-Type', 'application/json')
     const { id } = request.params;
+    console.log(id)
     if(!id) {
         return response.status(422).json({ errorMessage: 'No message id included in request'});
     };
-    
-    client.messages(id).remove()
-    let shortenedMessages = []
-    client.messages.list().then(messages => messages.forEach(m => shortenedMessages.push(m)))
-
-    if(shortenedMessages.length === app.locals.messages.length) {
+    const foundMessage = app.locals.messages.find(message => message.sid == id)
+    console.log(foundMessage)
+    if(!foundMessage) {
         return response.status(404).json({ errorMessage: `Cannot DELETE: no message with an id of ${id} found`})
     }
-    
-    app.locals.messages = shortenedMessages;
-    response.status(204)
+
+    client.messages(id).remove()
+    const shortenedMessages = app.locals.messages.filter(message => message.sid != id)
+    app.locals.messages = shortenedMessages
+    response.sendStatus(204)
 })
 
 app.post('/api/v1/sms', (request, response) => {
