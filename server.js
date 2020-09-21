@@ -1,5 +1,6 @@
 const express = require('express');
 const items = require('./items');
+const cors = require('cors')
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 const bodyParser = require('body-parser')
 require('dotenv').config()
@@ -9,6 +10,7 @@ const client = require('twilio')(
 );
 
 const app = express();
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -17,6 +19,10 @@ app.use((req, res, next) => {
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
     );
+    res.header(
+        "Access-Control-Allow-Methods",
+        "GET, POST, OPTIONS, PUT, DELETE"
+    )
     next();
 });
 
@@ -85,13 +91,14 @@ app.post('/api/v1/messages', (req, res) => {
 })
 
 app.delete('/api/v1/messages/:id', (request, response) => {
+    response.header('Content-Type', 'application/json')
     const { id } = request.params;
-    console.log(id)
+
     if(!id) {
         return response.status(422).json({ errorMessage: 'No message id included in request'});
     };
     const foundMessage = app.locals.messages.find(message => message.sid == id)
-    console.log(foundMessage)
+
     if(!foundMessage) {
         return response.status(404).json({ errorMessage: `Cannot DELETE: no message with an id of ${id} found`})
     }
@@ -103,10 +110,18 @@ app.delete('/api/v1/messages/:id', (request, response) => {
 })
 
 app.post('/api/v1/sms', (request, response) => {
+    newMessage = {
+        direction: 'inbound',
+        body: request.body.Body,
+        dateCreated: Date.now(),
+        id: request.body.MessageSid
+    }
+
+    const newMessages = [newMessage, ...app.locals.messages]
+    app.locals.messages = newMessages
     const twiml = new MessagingResponse();
 
     const message = twiml.message('Thanks for your response!')
-    console.log(message)
 
     response.writeHead(200, { 'Content-Type': 'text/xml' })
     response.end(twiml.toString());
